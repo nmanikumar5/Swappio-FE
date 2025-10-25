@@ -213,7 +213,7 @@ src/
 
 ### Core Technologies
 - **Next.js 16.0.0** - React framework with App Router
-- **TypeScript 5.x** - Type safety
+- **TypeScript 5.x** - Type safety (latest stable)
 - **React 19.2.0** - UI library
 - **Tailwind CSS 3.4.17** - Utility-first CSS
 

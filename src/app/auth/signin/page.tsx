@@ -15,7 +15,7 @@ export default function SignInPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle sign in with NextAuth
-    console.log("Sign in:", { email, password });
+    // TODO: Implement NextAuth signIn when backend is ready
   };
 
   return (
