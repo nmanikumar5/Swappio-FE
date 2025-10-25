@@ -30,7 +30,7 @@ export default function FilterSidebar() {
   }
 
   const handleSortChange = (value: string) => {
-    setFilters({ sortBy: value as any })
+    setFilters({ sortBy: value as 'newest' | 'price-low' | 'price-high' | 'popular' })
   }
 
   return (

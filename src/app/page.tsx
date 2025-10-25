@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import ProductCard from '@/components/ProductCard'
 import CategoryFilter from '@/components/CategoryFilter'
 import FilterSidebar from '@/components/FilterSidebar'
@@ -104,20 +104,20 @@ const mockProducts: Product[] = [
 
 export default function HomePage() {
   const { products, setProducts, filters, searchQuery, isLoading, setIsLoading } = useStore()
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
 
   // Load mock products on mount
   useEffect(() => {
     setIsLoading(true)
     // Simulate API call
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setProducts(mockProducts)
       setIsLoading(false)
     }, 500)
+    return () => clearTimeout(timer)
   }, [setProducts, setIsLoading])
 
-  // Apply filters
-  useEffect(() => {
+  // Apply filters using useMemo
+  const filteredProducts = useMemo(() => {
     let filtered = [...products]
 
     // Category filter
@@ -169,7 +169,7 @@ export default function HomePage() {
         break
     }
 
-    setFilteredProducts(filtered)
+    return filtered
   }, [products, filters, searchQuery])
 
   return (

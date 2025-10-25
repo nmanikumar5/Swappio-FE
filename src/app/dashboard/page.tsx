@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import ProductCard from '@/components/ProductCard'
-import { Package, Heart, MessageSquare, Settings } from 'lucide-react'
+import { Package, Heart, MessageSquare } from 'lucide-react'
 import { Product } from '@/types'
 
 const mockUserProducts: Product[] = [

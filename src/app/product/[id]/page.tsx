@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -58,14 +58,15 @@ Price is slightly negotiable. Serious buyers only please.`,
 export default function ProductDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const [product, setProduct] = useState<Product | null>(null)
   const [selectedImage, setSelectedImage] = useState(0)
   const { isFavourite, addFavourite, removeFavourite } = useStore()
 
-  useEffect(() => {
-    // In a real app, fetch product by ID
-    setProduct(mockProduct)
-  }, [params.id])
+  const product = useMemo(() => {
+    // In a real app, fetch product by ID from API
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _id = params.id
+    return mockProduct
+  }, [])
 
   if (!product) {
     return <div className="container mx-auto px-4 py-20 text-center">Loading...</div>

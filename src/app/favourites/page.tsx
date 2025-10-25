@@ -1,18 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import ProductCard from '@/components/ProductCard'
-import { Product } from '@/types'
 import { useStore } from '@/store'
 import { Heart } from 'lucide-react'
 
 export default function FavouritesPage() {
   const { favourites, products } = useStore()
-  const [favouriteProducts, setFavouriteProducts] = useState<Product[]>([])
-
-  useEffect(() => {
-    const filtered = products.filter(p => favourites.includes(p.id))
-    setFavouriteProducts(filtered)
+  
+  const favouriteProducts = useMemo(() => {
+    return products.filter(p => favourites.includes(p.id))
   }, [favourites, products])
 
   return (

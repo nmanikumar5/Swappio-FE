@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
+import { useState, useEffect, useRef, useMemo } from 'react'
+import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Avatar } from '@radix-ui/react-avatar'
 import { Send, Search } from 'lucide-react'
 import { Chat, Message } from '@/types'
 
@@ -48,8 +47,27 @@ const mockChats: Chat[] = [
   },
 ]
 
+const mockMessages: Message[] = [
+  {
+    id: '1',
+    content: 'Is this still available?',
+    senderId: 'user1',
+    receiverId: 'me',
+    createdAt: new Date(),
+    read: true,
+  },
+  {
+    id: '2',
+    content: 'Yes, it is! Are you interested?',
+    senderId: 'me',
+    receiverId: 'user1',
+    createdAt: new Date(),
+    read: true,
+  },
+]
+
 export default function ChatPage() {
-  const [chats, setChats] = useState<Chat[]>(mockChats)
+  const chats = useMemo(() => mockChats, [])
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
@@ -57,25 +75,11 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (selectedChat) {
-      // In real app, fetch messages for the selected chat
-      setMessages([
-        {
-          id: '1',
-          content: 'Is this still available?',
-          senderId: 'user1',
-          receiverId: 'me',
-          createdAt: new Date(),
-          read: true,
-        },
-        {
-          id: '2',
-          content: 'Yes, it is! Are you interested?',
-          senderId: 'me',
-          receiverId: 'user1',
-          createdAt: new Date(),
-          read: true,
-        },
-      ])
+      // In real app, fetch messages for the selected chat from API
+      const timer = setTimeout(() => {
+        setMessages(mockMessages)
+      }, 0)
+      return () => clearTimeout(timer)
     }
   }, [selectedChat])
 
