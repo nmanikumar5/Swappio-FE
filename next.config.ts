@@ -29,6 +29,13 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  }, async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://swappio-be.vercel.app/api/:path*",
+      },
+    ];
   },
 };
 
