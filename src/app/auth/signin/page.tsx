@@ -396,7 +396,7 @@ export default function SignInPage() {
             </TabsContent>
           </Tabs>
 
-          <div className="relative my-6">
+          {/* <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />
             </div>
@@ -404,7 +404,7 @@ export default function SignInPage() {
               <span className="bg-background px-2 text-muted-foreground">
                 Or continue with
               </span>
-            </div>
+          </div>
           </div>
 
           <div className="flex justify-center">
@@ -416,7 +416,7 @@ export default function SignInPage() {
               width="384"
               text="continue_with"
             />
-          </div>
+          </div> */}
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
