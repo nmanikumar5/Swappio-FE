@@ -1,0 +1,18 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Disallow admin and auth pages
+Disallow: /admin
+Disallow: /api/
+Disallow: /auth/
+
+# Allow images
+Allow: /images/
+Allow: /*.jpg$
+Allow: /*.png$
+Allow: /*.gif$
+Allow: /*.webp$
+
+# Sitemap
+Sitemap: https://swappio.com/sitemap.xml

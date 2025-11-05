@@ -1,87 +1,68 @@
-"use client";
+import NavbarClient from "./NavbarClient";
+import { cookies } from "next/headers";
+import crypto from "crypto";
 
-import Link from "next/link";
-import { Search, Plus, User, Heart, MessageSquare, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
 
-export default function Navbar() {
-  const [searchQuery, setSearchQuery] = useState("");
+function base64urlDecode(input: string) {
+  // replace URL-safe chars
+  input = input.replace(/-/g, "+").replace(/_/g, "/");
+  // pad with '='
+  const pad = input.length % 4;
+  if (pad === 2) input += "==";
+  else if (pad === 3) input += "=";
+  else if (pad === 1) input += "===";
+  return Buffer.from(input, "base64").toString("utf8");
+}
 
-  return (
-    <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <span className="text-xl font-bold">S</span>
-            </div>
-            <span className="text-xl font-bold">Swappio</span>
-          </Link>
+function verifyJwtHs256(token: string, secret: string) {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return false;
+    const [headerB64, payloadB64, sigB64] = parts;
+    const signingInput = `${headerB64}.${payloadB64}`;
 
-          {/* Search Bar - Desktop */}
-          <div className="hidden flex-1 max-w-2xl mx-8 md:flex">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search for products..."
-                className="pl-10 pr-4"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-          </div>
+    const signature = Buffer.from(
+      sigB64.replace(/-/g, "+").replace(/_/g, "/"),
+      "base64"
+    );
+    const expected = crypto
+      .createHmac("sha256", secret)
+      .update(signingInput)
+      .digest();
+    if (!crypto.timingSafeEqual(expected, signature)) return false;
 
-          {/* Actions */}
-          <div className="flex items-center space-x-2">
-            <Link href="/post-ad">
-              <Button className="hidden sm:flex items-center space-x-2">
-                <Plus className="h-4 w-4" />
-                <span>Post Ad</span>
-              </Button>
-            </Link>
+    const payloadJson = base64urlDecode(payloadB64);
+    const payload = JSON.parse(payloadJson);
+    if (payload && payload.exp && typeof payload.exp === "number") {
+      const now = Math.floor(Date.now() / 1000);
+      if (payload.exp < now) return false;
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
 
-            <Link href="/favorites">
-              <Button variant="ghost" size="icon">
-                <Heart className="h-5 w-5" />
-              </Button>
-            </Link>
-
-            <Link href="/chat">
-              <Button variant="ghost" size="icon">
-                <MessageSquare className="h-5 w-5" />
-              </Button>
-            </Link>
-
-            <Link href="/dashboard">
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-              </Button>
-            </Link>
-
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Search Bar - Mobile */}
-        <div className="pb-4 md:hidden">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search for products..."
-              className="pl-10"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
+export default async function Navbar() {
+  // try {
+  //   const cookieStore = await cookies();
+  //   const token = cookieStore.get?.("swappio_token")?.value;
+  //   if (!token) return <NavbarClient />;
+  //   const secret = process.env.NEXT_JWT_SECRET;
+  //   if (secret) {
+  //     verifyJwtHs256(token, secret);
+  //     return <NavbarClient />;
+  //   }
+  //   // fallback: existing server-side profile fetch when no local secret provided
+  //   const res = await fetch(`${API_URL}/auth/profile`, {
+  //     headers: { Authorization: `Bearer ${token}` },
+  //     cache: "no-store",
+  //   });
+  //   if (!res.ok) return <NavbarClient />;
+  //   return <NavbarClient />;
+  // } catch {
+  //   return <NavbarClient />;
+  // }
+  return <NavbarClient />;
 }

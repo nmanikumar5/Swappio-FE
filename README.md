@@ -121,6 +121,29 @@ The application currently uses mock data for development. Mock data is available
 - `src/services/api.ts` - Simulated API calls with delays
 
 ## Backend Integration
+Local backend integration
+-------------------------
+
+To use the real Swappio backend locally instead of mock data:
+
+1. Ensure the backend is running on port 5001 (or set `NEXT_PUBLIC_API_URL`).
+2. Update `Swappio-FE/.env.local` with:
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:5001/api
+NEXT_PUBLIC_SOCKET_URL=http://localhost:5001
+```
+
+3. Seed backend with sample listings (on the backend project):
+
+```
+# from Swappio-BE
+# install dev deps: npm install --save-dev faker minimist ts-node
+npm run seed -- --count=10000
+```
+
+4. Start backend (`npm run dev`) and frontend (`yarn dev`), open http://localhost:3000
+
 
 The frontend is ready to integrate with a backend API. Update the following:
 
